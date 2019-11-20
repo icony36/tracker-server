@@ -39,7 +39,21 @@ router.delete("/tracks", async (req, res) => {
   }
   try {
     await Track.findByIdAndDelete(_id);
-    res.send("Deleted!");
+    res.send(`Track deleted: ${_id}`);
+  } catch (err) {
+    res.status(422).send({ error: err.message });
+  }
+});
+
+router.put("/tracks", async (req, res) => {
+  const { _id, name } = req.body;
+
+  if (!_id || !name) {
+    return res.status(422).send({ err: "Please provide track id and name" });
+  }
+  try {
+    await Track.findByIdAndUpdate(_id, { name });
+    res.send(`Track updated: ${_id}`);
   } catch (err) {
     res.status(422).send({ error: err.message });
   }
