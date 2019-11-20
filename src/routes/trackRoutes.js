@@ -52,7 +52,7 @@ router.put("/tracks", async (req, res) => {
     return res.status(422).send({ err: "Please provide track id and name" });
   }
   try {
-    await Track.findByIdAndUpdate(_id, { name });
+    await Track.findByIdAndUpdate(_id, { name }, { useFindAndModify: false });
     res.send(`Track updated: ${_id}`);
   } catch (err) {
     res.status(422).send({ error: err.message });
