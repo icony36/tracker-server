@@ -8,12 +8,14 @@ const router = express.Router();
 
 router.use(requireAuth);
 
+// INDEX
 router.get("/tracks", async (req, res) => {
   const tracks = await Track.find({ userId: req.user._id });
 
   res.send(tracks);
 });
 
+// CREATE
 router.post("/tracks", async (req, res) => {
   const { name, locations } = req.body;
 
@@ -31,6 +33,22 @@ router.post("/tracks", async (req, res) => {
   }
 });
 
+// UPDATE
+router.put("/tracks", async (req, res) => {
+  const { _id, name } = req.body;
+
+  if (!_id || !name) {
+    return res.status(422).send({ err: "Please provide track id and name" });
+  }
+  try {
+    await Track.findByIdAndUpdate(_id, { name }, { useFindAndModify: false });
+    res.send(`Track updated: ${_id}`);
+  } catch (err) {
+    res.status(422).send({ error: err.message });
+  }
+});
+
+// DESTROY
 router.delete("/tracks", async (req, res) => {
   const { _id } = req.body;
 
@@ -45,18 +63,6 @@ router.delete("/tracks", async (req, res) => {
   }
 });
 
-router.put("/tracks", async (req, res) => {
-  const { _id, name } = req.body;
 
-  if (!_id || !name) {
-    return res.status(422).send({ err: "Please provide track id and name" });
-  }
-  try {
-    await Track.findByIdAndUpdate(_id, { name }, { useFindAndModify: false });
-    res.send(`Track updated: ${_id}`);
-  } catch (err) {
-    res.status(422).send({ error: err.message });
-  }
-});
 
 module.exports = router;
