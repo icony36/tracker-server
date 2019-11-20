@@ -31,4 +31,18 @@ router.post("/tracks", async (req, res) => {
   }
 });
 
+router.delete("/tracks", async (req, res) => {
+  const { _id } = req.body;
+
+  if (!_id) {
+    return res.status(422).send({ err: "Please provide track id" });
+  }
+  try {
+    await Track.findByIdAndDelete(_id);
+    res.send("Deleted!");
+  } catch (err) {
+    res.status(422).send({ error: err.message });
+  }
+});
+
 module.exports = router;
